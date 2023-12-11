@@ -1,6 +1,6 @@
-const { getProductById, addProduct, getAllProducts, getProductByUserId, deleteProduct, updateProduct } = require("../controllers/productController");
+const { getVehicleById, addVehicle, deleteVehicle, updateVehicle, getAllVehicles, getVehicleByUserId } = require("../controllers/vehicleController");
 const { getUserByUsernameAndPassword, getAllUsers, addUser } = require("../controllers/userController");
-const Product = require("../models/productModel");
+const Vehicle = require("../models/vehicleModel");
 const User = require("../models/userModel");
 const { validateToken } = require('../authUtils');
 
@@ -186,29 +186,29 @@ describe('getAllUsers', () => {
     expect(res.json).toHaveBeenCalledWith({ message: 'Database error' });
   });
 });
-describe('getAllProducts', () => {
-  test('getallproducts_should_return_with_a_200_status_code', async () => {
-    // Sample product data
-    const productsData = [
+describe('getAllVehicle', () => {
+  test('getallvehicle_should_return_with_a_200_status_code', async () => {
+    // Sample vehicle data
+    const vehiclesData = [
       {
-        _id: 'product1',
-        vehicleName:'Product 1',
+        _id: 'vehicle1',
+        vehicleName:'vehicle 1',
         rentalPrice: 29.99,
         category: 'Clothing',
-        description: 'Product 1 description',
-        imageurl: 'https://example.com/product1-image.jpg',
-        origin: 'Product 1 origin',
+        description: 'vehicle 1 description',
+        imageUrl: 'https://example.com/vehicle1-image.jpg',
+        origin: 'vehicle 1 origin',
         quantity: 5,
         userId: 'user123',
       },
       {
-        _id: 'product2',
-        vehicleName:'Product 2',
+        _id: 'vehicle2',
+        vehicleName:'vehicle 2',
         rentalPrice: 39.99,
         category: 'Electronics',
-        description: 'Product 2 description',
-        imageurl: 'https://example.com/product2-image.jpg',
-        origin: 'Product 2 origin',
+        description: 'vehicle 2 description',
+        imageUrl: 'https://example.com/vehicle2-image.jpg',
+        origin: 'vehicle 2 origin',
         quantity: 10,
         userId: 'user456',
       },
@@ -223,41 +223,41 @@ describe('getAllProducts', () => {
       json: jest.fn(),
     };
 
-    // Mock the Product.find method to resolve with the sample product data
-    const productQuery = {
-      sort: jest.fn().mockResolvedValue(productsData), // Mocking the sort function
-      exec: jest.fn().mockResolvedValue(productsData), // Mocking the exec function
+    // Mock the Vehicle.find method to resolve with the sample vehicle data
+    const vehicleQuery = {
+      sort: jest.fn().mockResolvedValue(vehiclesData), // Mocking the sort function
+      exec: jest.fn().mockResolvedValue(vehiclesData), // Mocking the exec function
     };
-    Product.find = jest.fn().mockReturnValue(productQuery);
+    Vehicle.find = jest.fn().mockReturnValue(vehicleQuery);
 
     // Call the controller function
-    await getAllProducts(req, res);
+    await getAllVehicles(req, res);
 
     // Assertions
     expect(res.status).toHaveBeenCalledWith(200);
   });
-  test('getallproducts_should_return_products_and_respond_with_a_200_status_code', async () => {
-    // Sample product data
-    const productsData = [
+  test('getallvechiles_should_return_vehicles_and_respond_with_a_200_status_code', async () => {
+    // Sample vehicle data
+    const vehiclesData = [
       {
-        _id: 'product1',
-        vehicleName:'Product 1',
+        _id: 'vehicle1',
+        vehicleName:'vehicle 1',
         rentalPrice: 29.99,
         category: 'Clothing',
-        description: 'Product 1 description',
-        imageurl: 'https://example.com/product1-image.jpg',
-        origin: 'Product 1 origin',
+        description: 'vehicle 1 description',
+        imageUrl: 'https://example.com/vehicle1-image.jpg',
+        origin: 'vehicle 1 origin',
         quantity: 5,
         userId: 'user123',
       },
       {
-        _id: 'product2',
-        vehicleName:'Product 2',
+        _id: 'vehicle2',
+        vehicleName:'vehicle 2',
         rentalPrice: 39.99,
         category: 'Electronics',
-        description: 'Product 2 description',
-        imageurl: 'https://example.com/product2-image.jpg',
-        origin: 'Product 2 origin',
+        description: 'vehicle 2 description',
+        imageUrl: 'https://example.com/vehicle2-image.jpg',
+        origin: 'vehicle 2 origin',
         quantity: 10,
         userId: 'user456',
       },
@@ -272,25 +272,24 @@ describe('getAllProducts', () => {
       json: jest.fn(),
     };
 
-    // Mock the Product.find method to resolve with the sample product data
-    const productQuery = {
-      sort: jest.fn().mockResolvedValue(productsData), // Mocking the sort function
-      exec: jest.fn().mockResolvedValue(productsData), // Mocking the exec function
+    // Mock the Vehicle.find method to resolve with the sample vehicle data
+    const vehicleQuery = {
+      sort: jest.fn().mockResolvedValue(vehiclesData), // Mocking the sort function
+      exec: jest.fn().mockResolvedValue(vehiclesData), // Mocking the exec function
     };
-    Product.find = jest.fn().mockReturnValue(productQuery);
+    Vehicle.find = jest.fn().mockReturnValue(vehicleQuery);
 
     // Call the controller function
-    await getAllProducts(req, res);
+    await getAllVehicles(req, res);
 
     // Assertions
-    expect(Product.find).toHaveBeenCalledWith({ vehicleName:new RegExp('', 'i') });
-    expect(productQuery.sort).toHaveBeenCalledWith({ rentalPrice: 1 });
+    expect(Vehicle.find).toHaveBeenCalledWith({ vehicleName:new RegExp('', 'i') });
+    expect(vehicleQuery.sort).toHaveBeenCalledWith({ rentalPrice: 1 });
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith(productsData);
+    expect(res.json).toHaveBeenCalledWith(vehiclesData);
   });
-
-  test('getallproducts_should_handle_errors_and_respond_with_a_500_status_code_and_an_error_message', async () => {
-    // Mock an error to be thrown when calling Product.find
+  test('getallvehicles_should_handle_errors_and_respond_with_a_500_status_code_and_an_error_message', async () => {
+    // Mock an error to be thrown when calling Vehicle.find
     const error = new Error('Database error');
 
     // Mock Express request and response objects
@@ -302,47 +301,47 @@ describe('getAllProducts', () => {
       json: jest.fn(),
     };
 
-    // Mock the Product.find method to reject with an error
-    const productQuery = {
+    // Mock the Vehicle.find method to reject with an error
+    const vehicleQuery = {
       sort: jest.fn().mockRejectedValue(error), // Mocking the sort function with error
       exec: jest.fn().mockRejectedValue(error), // Mocking the exec function with error
     };
-    Product.find = jest.fn().mockReturnValue(productQuery);
+    Vehicle.find = jest.fn().mockReturnValue(vehicleQuery);
 
     // Call the controller function
-    await getAllProducts(req, res);
+    await getAllVehicles(req, res);
 
     // Assertions
-    expect(Product.find).toHaveBeenCalledWith({ vehicleName:new RegExp('', 'i') });
-    expect(productQuery.sort).toHaveBeenCalledWith({ rentalPrice: 1 });
+    expect(Vehicle.find).toHaveBeenCalledWith({ vehicleName:new RegExp('', 'i') });
+    expect(vehicleQuery.sort).toHaveBeenCalledWith({ rentalPrice: 1 });
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({ message: 'Database error' });
   });
 });
-describe('getProductByUserId', () => {
-  test('getproductbyuserid_should_return_products_for_a_valid_user_id_and_respond_with_a_200_status_code', async () => {
-    // Sample user ID and product data
+describe('get_vehicle_by_user_id', () => {
+  test('get_vehicle_by_user_id_should_return_vehicles_for_a_valid_user_id_and_respond_with_a_200_status_code', async () => {
+    // Sample user ID and vehicle data
     const userId = 'user123';
-    const productsData = [
+    const vehiclesData = [
       {
-        _id: 'product1',
-        vehicleName:'Product 1',
+        _id: 'vehicle1',
+        vehicleName:'vehicle 1',
         rentalPrice: 29.99,
         category: 'Clothing',
-        description: 'Product 1 description',
-        imageurl: 'https://example.com/product1-image.jpg',
-        origin: 'Product 1 origin',
+        description: 'vehicle 1 description',
+        imageUrl: 'https://example.com/vehicle1-image.jpg',
+        origin: 'vehicle 1 origin',
         quantity: 5,
         userId: 'user123',
       },
       {
-        _id: 'product2',
-        vehicleName:'Product 2',
+        _id: 'vehicle2',
+        vehicleName:'vehicle 2',
         rentalPrice: 39.99,
         category: 'Electronics',
-        description: 'Product 2 description',
-        imageurl: 'https://example.com/product2-image.jpg',
-        origin: 'Product 2 origin',
+        description: 'vehicle 2 description',
+        imageUrl: 'https://example.com/vehicle2-image.jpg',
+        origin: 'vehicle 2 origin',
         quantity: 10,
         userId: 'user123',
       },
@@ -357,24 +356,24 @@ describe('getProductByUserId', () => {
       json: jest.fn(),
     };
 
-    // Mock the Product.find method to resolve with a query
-    const productQuery = {
-      sort: jest.fn().mockResolvedValue(productsData), // Mocking the sort function
+    // Mock the Vehicle.find method to resolve with a query
+    const vehicleQuery = {
+      sort: jest.fn().mockResolvedValue(vehiclesData), // Mocking the sort function
     };
-    Product.find = jest.fn().mockReturnValue(productQuery);
+    Vehicle.find = jest.fn().mockReturnValue(vehicleQuery);
 
     // Call the controller function
-    await getProductByUserId(req, res);
+    await getVehicleByUserId(req, res);
 
     // Assertions
-    expect(Product.find).toHaveBeenCalledWith({ userId: 'user123', vehicleName:new RegExp('', 'i') });
-    expect(productQuery.sort).toHaveBeenCalledWith({ rentalPrice: 1 });
+    expect(Vehicle.find).toHaveBeenCalledWith({ userId: 'user123', vehicleName:new RegExp('', 'i') });
+    expect(vehicleQuery.sort).toHaveBeenCalledWith({ rentalPrice: 1 });
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith(productsData);
+    expect(res.json).toHaveBeenCalledWith(vehiclesData);
   });
 
-  test('getproductbyuserid_should_handle_errors_and_respond_with_a_500_status_code_and_an_error_message', async () => {
-    // Mock an error to be thrown when calling Product.find
+  test('get_vehicle_by_user_id_should_handle_errors_and_respond_with_a_500_status_code_and_an_error_message', async () => {
+    // Mock an error to be thrown when calling Vehicle.find
     const error = new Error('Database error');
 
     // Mock Express request and response objects
@@ -386,242 +385,242 @@ describe('getProductByUserId', () => {
       json: jest.fn(),
     };
 
-    // Mock the Product.find method to resolve with a query
-    const productQuery = {
+    // Mock the Vehicle.find method to resolve with a query
+    const vehicleQuery = {
       sort: jest.fn().mockRejectedValue(error), // Mocking the sort function with error
     };
-    Product.find = jest.fn().mockReturnValue(productQuery);
+    Vehicle.find = jest.fn().mockReturnValue(vehicleQuery);
 
     // Call the controller function
-    await getProductByUserId(req, res);
+    await getVehicleByUserId(req, res);
 
     // Assertions
-    expect(Product.find).toHaveBeenCalledWith({ userId: 'user123', vehicleName:new RegExp('', 'i') });
-    expect(productQuery.sort).toHaveBeenCalledWith({ rentalPrice: 1 });
+    expect(Vehicle.find).toHaveBeenCalledWith({ userId: 'user123', vehicleName:new RegExp('', 'i') });
+    expect(vehicleQuery.sort).toHaveBeenCalledWith({ rentalPrice: 1 });
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({ message: 'Database error' });
   });
 });
-describe('deleteProduct', () => {
-  test('deleteproduct_should_delete_a_product_and_respond_with_a_200_status_code_and_success_message', async () => {
-    // Sample product ID to be deleted
-    const productId = 'product123';
+describe('deleteVehicle', () => {
+  test('delete_vehicle_should_delete_a_vehicle_and_respond_with_a_200_status_code_and_success_message', async () => {
+    // Sample vehicle ID to be deleted
+    const vehicleId = 'vehicle123';
 
     // Mock Express request and response objects
-    const req = { params: { id: productId } };
+    const req = { params: { id: vehicleId } };
     const res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
 
-    // Mock the Product.findByIdAndDelete method to resolve with the deleted product data
-    Product.findByIdAndDelete = jest.fn().mockResolvedValue({
-      _id: productId,
-      vehicleName:'Deleted Product',
+    // Mock the Vehicle.findByIdAndDelete method to resolve with the deleted vehicle data
+    Vehicle.findByIdAndDelete = jest.fn().mockResolvedValue({
+      _id: vehicleId,
+      vehicleName:'Deleted vehicle',
       // Include other fields as needed
     });
 
     // Call the controller function
-    await deleteProduct(req, res);
+    await deleteVehicle(req, res);
 
     // Assertions
-    expect(Product.findByIdAndDelete).toHaveBeenCalledWith(productId);
+    expect(Vehicle.findByIdAndDelete).toHaveBeenCalledWith(vehicleId);
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({ message: 'Vehicle deleted successfully' });
   });
 
-  test('deleteproduct_should_handle_not_finding_a_product_and_respond_with_a_404_status_code', async () => {
+  test('delete_vehicle_should_handle_not_finding_a_vehicle_and_respond_with_a_404_status_code', async () => {
     // Mock Express request and response objects
-    const req = { params: { id: 'nonExistentProduct' } };
+    const req = { params: { id: 'nonExistentvehicle' } };
     const res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
 
-    // Mock the Product.findByIdAndDelete method to resolve with null (product not found)
-    Product.findByIdAndDelete = jest.fn().mockResolvedValue(null);
+    // Mock the Vehicle.findByIdAndDelete method to resolve with null (vehicle not found)
+    Vehicle.findByIdAndDelete = jest.fn().mockResolvedValue(null);
 
     // Call the controller function
-    await deleteProduct(req, res);
+    await deleteVehicle(req, res);
 
     // Assertions
-    expect(Product.findByIdAndDelete).toHaveBeenCalledWith('nonExistentProduct');
+    expect(Vehicle.findByIdAndDelete).toHaveBeenCalledWith('nonExistentvehicle');
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({ message: 'Cannot find any vehicle' });
   });
 
-  test('deleteproduct_should_handle_errors_and_respond_with_a_500_status_code_and_an_error_message', async () => {
-    // Mock an error to be thrown when calling Product.findByIdAndDelete
+  test('delete_vehicle_should_handle_errors_and_respond_with_a_500_status_code_and_an_error_message', async () => {
+    // Mock an error to be thrown when calling Vehicle.findByIdAndDelete
     const error = new Error('Database error');
 
     // Mock Express request and response objects
-    const req = { params: { id: 'product123' } };
+    const req = { params: { id: 'vehicle123' } };
     const res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
 
-    // Mock the Product.findByIdAndDelete method to reject with an error
-    Product.findByIdAndDelete = jest.fn().mockRejectedValue(error);
+    // Mock the Vehicle.findByIdAndDelete method to reject with an error
+    Vehicle.findByIdAndDelete = jest.fn().mockRejectedValue(error);
 
     // Call the controller function
-    await deleteProduct(req, res);
+    await deleteVehicle(req, res);
 
     // Assertions
-    expect(Product.findByIdAndDelete).toHaveBeenCalledWith('product123');
+    expect(Vehicle.findByIdAndDelete).toHaveBeenCalledWith('vehicle123');
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({ message: 'Database error' });
   });
 });
 
-describe('updateProduct', () => {
-  test('updateproduct_should_update_a_product_and_respond_with_a_200_status_code_and_success_message', async () => {
-    // Sample product ID and updated product data
-    const productId = 'product123';
-    const updatedProductData = {
-      vehicleName:'Updated Product',
+describe('updateVehicle', () => {
+  test('update_vehicle_should_update_a_vehicle_and_respond_with_a_200_status_code_and_success_message', async () => {
+    // Sample vehicle ID and updated vehicle data
+    const vehicleId = 'vehicle123';
+    const updatedvehicleData = {
+      vehicleName:'Updated vehicle',
       rentalPrice: 39.99,
       category: 'Electronics',
-      description: 'Updated product description',
-      imageurl: 'https://example.com/updated-product-image.jpg',
+      description: 'Updated vehicle description',
+      imageUrl: 'https://example.com/updated-vehicle-image.jpg',
       origin: 'Updated origin',
       quantity: 15,
       userId: 'user789',
     };
 
     // Mock Express request and response objects
-    const req = { params: { id: productId }, body: updatedProductData };
+    const req = { params: { id: vehicleId }, body: updatedvehicleData };
     const res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
 
-    // Mock the Product.findByIdAndUpdate method to resolve with the updated product data
-    Product.findByIdAndUpdate = jest.fn().mockResolvedValue(updatedProductData);
+    // Mock the Vehicle.findByIdAndUpdate method to resolve with the updated vehicle data
+    Vehicle.findByIdAndUpdate = jest.fn().mockResolvedValue(updatedvehicleData);
 
     // Call the controller function
-    await updateProduct(req, res);
+    await updateVehicle(req, res);
 
     // Assertions
-    expect(Product.findByIdAndUpdate).toHaveBeenCalledWith(productId, updatedProductData, { new: true });
+    expect(Vehicle.findByIdAndUpdate).toHaveBeenCalledWith(vehicleId, updatedvehicleData, { new: true });
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({ message: 'Vehicle updated successfully' });
   });
 
-  test('updateproduct_should_handle_not_finding_a_product_and_respond_with_a_404_status_code', async () => {
+  test('update_vehicle_should_handle_not_finding_a_vehicle_and_respond_with_a_404_status_code', async () => {
     // Mock Express request and response objects
-    const req = { params: { id: 'nonExistentProduct' }, body: {} };
+    const req = { params: { id: 'nonExistentvehicle' }, body: {} };
     const res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
 
-    // Mock the Product.findByIdAndUpdate method to resolve with null (product not found)
-    Product.findByIdAndUpdate = jest.fn().mockResolvedValue(null);
+    // Mock the Vehicle.findByIdAndUpdate method to resolve with null (vehicle not found)
+    Vehicle.findByIdAndUpdate = jest.fn().mockResolvedValue(null);
 
     // Call the controller function
-    await updateProduct(req, res);
+    await updateVehicle(req, res);
 
     // Assertions
-    expect(Product.findByIdAndUpdate).toHaveBeenCalledWith('nonExistentProduct', {}, { new: true });
+    expect(Vehicle.findByIdAndUpdate).toHaveBeenCalledWith('nonExistentvehicle', {}, { new: true });
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({ message: 'Cannot find any vehicle' });
   });
 
-  test('updateproduct_should_handle_errors_and_respond_with_a_500_status_code_and_an_error_message', async () => {
-    // Mock an error to be thrown when calling Product.findByIdAndUpdate
+  test('update_vehicle_should_handle_errors_and_respond_with_a_500_status_code_and_an_error_message', async () => {
+    // Mock an error to be thrown when calling Vehicle.findByIdAndUpdate
     const error = new Error('Database error');
 
     // Mock Express request and response objects
-    const req = { params: { id: 'product123' }, body: {} };
+    const req = { params: { id: 'vehicle123' }, body: {} };
     const res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
 
-    // Mock the Product.findByIdAndUpdate method to reject with an error
-    Product.findByIdAndUpdate = jest.fn().mockRejectedValue(error);
+    // Mock the Vehicle.findByIdAndUpdate method to reject with an error
+    Vehicle.findByIdAndUpdate = jest.fn().mockRejectedValue(error);
 
     // Call the controller function
-    await updateProduct(req, res);
+    await updateVehicle(req, res);
 
     // Assertions
-    expect(Product.findByIdAndUpdate).toHaveBeenCalledWith('product123', {}, { new: true });
+    expect(Vehicle.findByIdAndUpdate).toHaveBeenCalledWith('vehicle123', {}, { new: true });
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({ message: 'Database error' });
   });
 });
-describe('getProductById', () => {
-  test('getproductbyid_should_return_a_product_with_a_200_status_code', async () => {
-    // Sample product ID and corresponding product
-    const productId = 'product123';
-    const productData = {
-      _id: productId,
-      vehicleName:'Sample Product',
+describe('getVehicleById', () => {
+  test('get_vehicle_by_id_should_return_a_vehicle_with_a_200_status_code', async () => {
+    // Sample vehicle ID and corresponding vehicle
+    const vehicleId = 'vehicle123';
+    const vehicleData = {
+      _id: vehicleId,
+      vehicleName:'Sample vehicle',
       rentalPrice: 50.99,
       category: 'Electronics',
-      description: 'Sample product description',
-      imageurl: 'https://example.com/sample-image.jpg',
+      description: 'Sample vehicle description',
+      imageUrl: 'https://example.com/sample-image.jpg',
       origin: 'Sample origin',
       quantity: 10,
       userId: 'user123',
     };
 
-    // Mock the Product.findById method to resolve with the sample product
-    Product.findById = jest.fn().mockResolvedValue(productData);
+    // Mock the Vehicle.findById method to resolve with the sample vehicle
+    Vehicle.findById = jest.fn().mockResolvedValue(vehicleData);
 
     // Mock Express request and response objects
-    const req = { params: { id: productId } };
+    const req = { params: { id: vehicleId } };
     const res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
 
     // Call the controller function
-    await getProductById(req, res);
+    await getVehicleById(req, res);
 
     // Assertions
-    expect(Product.findById).toHaveBeenCalledWith(productId);
+    expect(Vehicle.findById).toHaveBeenCalledWith(vehicleId);
     expect(res.status).toHaveBeenCalledWith(200);
   });
-  test('getproductbyid_should_return_a_product_with_a_exact_response_object', async () => {
-    // Sample product ID and corresponding product
-    const productId = 'product123';
-    const productData = {
-      _id: productId,
-      vehicleName:'Sample Product',
+  test('get_vehicle_by_id_should_return_a_vehicle_with_a_exact_response_object', async () => {
+    // Sample vehicle ID and corresponding vehicle
+    const vehicleId = 'vehicle123';
+    const vehicleData = {
+      _id: vehicleId,
+      vehicleName:'Sample vehicle',
       rentalPrice: 50.99,
       category: 'Electronics',
-      description: 'Sample product description',
-      imageurl: 'https://example.com/sample-image.jpg',
+      description: 'Sample vehicle description',
+      imageUrl: 'https://example.com/sample-image.jpg',
       origin: 'Sample origin',
       quantity: 10,
       userId: 'user123',
     };
 
-    // Mock the Product.findById method to resolve with the sample product
-    Product.findById = jest.fn().mockResolvedValue(productData);
+    // Mock the Vehicle.findById method to resolve with the sample vehicle
+    Vehicle.findById = jest.fn().mockResolvedValue(vehicleData);
 
     // Mock Express request and response objects
-    const req = { params: { id: productId } };
+    const req = { params: { id: vehicleId } };
     const res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
 
     // Call the controller function
-    await getProductById(req, res);
+    await getVehicleById(req, res);
 
     // Assertions
-    expect(Product.findById).toHaveBeenCalledWith(productId);
-    expect(res.json).toHaveBeenCalledWith(productData);
+    expect(Vehicle.findById).toHaveBeenCalledWith(vehicleId);
+    expect(res.json).toHaveBeenCalledWith(vehicleData);
   });
-  test('getproductbyid_should_return_product_not_found_with_a_200_status_code', async () => {
+  test('get_vehicle_by_id_should_return_vehicle_not_found_with_a_200_status_code', async () => {
     // Mock Express request and response objects
-    const req = { params: { id: 'nonExistentProduct' } };
+    const req = { params: { id: 'nonExistentvehicle' } };
 
-    // Mock the Product.findById method to resolve with null (product not found)
-    Product.findById = jest.fn().mockResolvedValue(null);
+    // Mock the Vehicle.findById method to resolve with null (vehicle not found)
+    Vehicle.findById = jest.fn().mockResolvedValue(null);
 
     const res = {
       status: jest.fn().mockReturnThis(),
@@ -629,23 +628,23 @@ describe('getProductById', () => {
     };
 
     // Call the controller function
-    await getProductById(req, res);
+    await getVehicleById(req, res);
 
     // Assertions
-    expect(Product.findById).toHaveBeenCalledWith('nonExistentProduct');
+    expect(Vehicle.findById).toHaveBeenCalledWith('nonExistentvehicle');
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({ message: 'Cannot find any vehicle' });
   });
 
-  test('getproductbyid_should_handle_errors_and_respond_with_a_500_status_code_and_an_error_message', async () => {
-    // Mock an error to be thrown when calling Product.findById
+  test('get_vehicle_by_id_should_handle_errors_and_respond_with_a_500_status_code_and_an_error_message', async () => {
+    // Mock an error to be thrown when calling Vehicle.findById
     const error = new Error('Database error');
 
     // Mock Express request and response objects
-    const req = { params: { id: 'product123' } };
+    const req = { params: { id: 'vehicle123' } };
 
-    // Mock the Product.findById method to reject with an error
-    Product.findById = jest.fn().mockRejectedValue(error);
+    // Mock the Vehicle.findById method to reject with an error
+    Vehicle.findById = jest.fn().mockRejectedValue(error);
 
     const res = {
       status: jest.fn().mockReturnThis(),
@@ -653,54 +652,54 @@ describe('getProductById', () => {
     };
 
     // Call the controller function
-    await getProductById(req, res);
+    await getVehicleById(req, res);
 
     // Assertions
-    expect(Product.findById).toHaveBeenCalledWith('product123');
+    expect(Vehicle.findById).toHaveBeenCalledWith('vehicle123');
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({ message: 'Database error' });
   });
 
 });
-describe('addProduct', () => {
-  test('addproduct_should_add_a_product_and_respond_with_a_200_status_code_and_success_message', async () => {
-    // Sample product data to be added
-    const productToAdd = {
-      vehicleName:'New Product',
+describe('addVehicle', () => {
+  test('add_vehicle_should_add_a_vehicle_and_respond_with_a_200_status_code_and_success_message', async () => {
+    // Sample vehicle data to be added
+    const vehicleToAdd = {
+      vehicleName:'New vehicle',
       rentalPrice: 29.99,
       category: 'Clothing',
-      description: 'New product description',
-      imageurl: 'https://example.com/new-product-image.jpg',
+      description: 'New vehicle description',
+      imageUrl: 'https://example.com/new-vehicle-image.jpg',
       origin: 'New origin',
       quantity: 5,
       userId: 'user456',
     };
 
-    // Mock the Product.create method to resolve successfully
-    Product.create = jest.fn().mockResolvedValue(productToAdd);
+    // Mock the Vehicle.create method to resolve successfully
+    Vehicle.create = jest.fn().mockResolvedValue(vehicleToAdd);
 
     // Mock Express request and response objects
-    const req = { body: productToAdd };
+    const req = { body: vehicleToAdd };
     const res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
 
     // Call the controller function
-    await addProduct(req, res);
+    await addVehicle(req, res);
 
     // Assertions
-    expect(Product.create).toHaveBeenCalledWith(productToAdd);
+    expect(Vehicle.create).toHaveBeenCalledWith(vehicleToAdd);
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({ message: 'Vehicle added successfully' });
   });
 
-  test('addproduct_should_handle_errors_and_respond_with_a_500_status_code_and_an_error_message', async () => {
-    // Mock an error to be thrown when calling Product.create
+  test('add_vehicle_should_handle_errors_and_respond_with_a_500_status_code_and_an_error_message', async () => {
+    // Mock an error to be thrown when calling Vehicle.create
     const error = new Error('Database error');
 
-    // Mock the Product.create method to reject with an error
-    Product.create = jest.fn().mockRejectedValue(error);
+    // Mock the Vehicle.create method to reject with an error
+    Vehicle.create = jest.fn().mockRejectedValue(error);
 
     // Mock Express request and response objects
     const req = { body: {} };
@@ -710,10 +709,10 @@ describe('addProduct', () => {
     };
 
     // Call the controller function
-    await addProduct(req, res);
+    await addVehicle(req, res);
 
     // Assertions
-    expect(Product.create).toHaveBeenCalledWith(req.body);
+    expect(Vehicle.create).toHaveBeenCalledWith(req.body);
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({ message: 'Database error' });
   });
@@ -810,58 +809,25 @@ describe('User Model Schema Validation', () => {
     await expect(user.validate()).rejects.toThrowError(/is longer than the maximum allowed length /);
   });
 });
-describe("schema validation for product",()=>{
-  test('should_validate_a_product_with_a_negative_price', async () => {
-    const invalidProductData = {
-      vehicleName:'Sample Product',
+describe("schema validation for vehicle",()=>{
+  test('should_validate_a_vehicle_with_a_negative_price', async () => {
+    const invalidvehicleData = {
+      vehicleName:'Sample vehicle',
       rentalPrice: -10,
-      description: 'This is a sample product description.',
-      imageurl: 'https://example.com/sample-image.jpg',
+      description: 'This is a sample vehicle description.',
+      imageUrl: 'https://example.com/sample-image.jpg',
       category: 'Electronics',
       origin: 'Sample Origin',
       quantity: 10,
       userId: 'user123',
     };
   
-    const product = new Product(invalidProductData);
+    let a=new Vehicle(invalidvehicleData);
   
-    // Validate the product data against the schema
-    await expect(product.validate()).rejects.toThrowError(/is less than minimum allowed value/);
+    // Validate the vehicle data against the schema
+    await expect(a.validate()).rejects.toThrowError(/is less than minimum allowed value/);
   });
-  test('should_validate_a_product_with_a_negative_quantity', async () => {
-    const invalidProductData = {
-      vehicleName:'Sample Product',
-      rentalPrice: 50.99,
-      description: 'This is a sample product description.',
-      imageurl: 'https://example.com/sample-image.jpg',
-      category: 'Electronics',
-      origin: 'Sample Origin',
-      quantity: -5, // Quantity less than zero
-      userId: 'user123',
-    };
 
-    const product = new Product(invalidProductData);
-
-    // Validate the product data against the schema
-    await expect(product.validate()).rejects.toThrowError(/is less than minimum allowed value/);
-  });
-  test('should_validate_a_product_with_a_description_longer_than_the_maximum_length', async () => {
-    const invalidProductData = {
-      vehicleName:'Sample Product',
-      rentalPrice: 50.99,
-      description: 'This is a sample product description. '.repeat(20), // Create a description longer than the maximum length
-      imageurl: 'https://example.com/sample-image.jpg',
-      category: 'Electronics',
-      origin: 'Sample Origin',
-      quantity: 10,
-      userId: 'user123',
-    };
-
-    const product = new Product(invalidProductData);
-
-    // Validate the product data against the schema
-    await expect(product.validate()).rejects.toThrowError(/is longer than the maximum allowed length/);
-  });
 })
 
 describe('validateToken', () => {
